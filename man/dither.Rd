@@ -6,20 +6,20 @@
 \usage{
 dither(
   img,
-  res = 220,
+  res = 200,
   scale = NULL,
   target_palette = "extract",
-  n = 6,
+  n = 16,
   bayer_size = 3,
   seed = NULL,
-  dither = TRUE,
+  dither = "ordered",
   original = FALSE
 )
 }
 \arguments{
 \item{img}{path or URL to image}
 
-\item{res}{Horixontal resolution of output image in pixels (default = 220)
+\item{res}{Horixontal resolution of output image in pixels (default = 200)
 This is only used if scale = NULL (which is the default behaviour). The reason for this is to try and
 prevent very large images being processed by accident (large images will be slow to dither)}
 
@@ -33,15 +33,16 @@ If scale is not NULL, it overides the value of res. Full size = 100, half size =
   \item A character vector of colours = The vector of colours is used as is
   }}
 
-\item{n}{Number of oclours to be used (default = 6) if target palette is set to 'extract' or 'greyscale'}
+\item{n}{Number of oclours to be used (default = 16) if target palette is set to 'extract' or 'greyscale'}
 
 \item{bayer_size}{bayer matrix size (square matrix of side length 2^bayer_size)}
 
-\item{seed}{A seed for reproducability if target_palette is set to 'extract' (default = NULL)}
-
-\item{dither}{Should dithering be applied, logical (default = TRUE)}
-
-\item{original}{Print original (resized) picture colours (defaul = FALSE)}
+\item{dither}{One of
+\itemize{
+  \item "ordered" - Ordered dithering using a bayer matrix (default)
+  \item "diffusion" - Floyd/Steinberg error diffusion dithering
+  \item "none" - No dithering
+  }}
 }
 \description{
 An implementation of ordered image dithering using the bayer matrix

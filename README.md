@@ -3,10 +3,9 @@
 
 # ditherer
 
-The goal of ditherer is to implement a form of ordered imaging
-dithering.
+This is a very early work in progress. EXPERIMENTAL\!\!
 
-This is a very early work in progress.
+Now using `magick` as the main engine
 
 ## Installation
 
@@ -18,23 +17,31 @@ remotes::install_github('cj-holmes/ditherer)
 
 ``` r
 library(ditherer)
-library(ggplot2)
-#> Warning: package 'ggplot2' was built under R version 3.6.3
 ```
 
-Test image from [The USC-SIPI Image
-Database](http://sipi.usc.edu/database/)
+Test image Lenna
 
 ``` r
-img <- 'data-raw/sailboat-on-lake.png'
-patchwork::wrap_plots(dither(img, dither = FALSE, original = TRUE) + labs(title = "Original (resized)"),
-                      dither(img, seed = 1) + labs(title = "Dithered - 6 colour target palette"))
+img <- 'data-raw/lenna.png'
+dither(img, dither = "ordered")
 ```
 
 ![](man/figures/README-example1-1.png)<!-- -->
 
 ``` r
-dither(img, target_palette = "greyscale") + labs(title = "Dithered - 6 shades of grey")
+dither(img, dither = "diffusion")
 ```
 
-![](man/figures/README-example2-1.png)<!-- -->
+![](man/figures/README-example1-2.png)<!-- -->
+
+``` r
+dither(img, dither = "none")
+```
+
+![](man/figures/README-example1-3.png)<!-- -->
+
+``` r
+dither(img, dither = "ordered", target_palette = "greyscale")
+```
+
+![](man/figures/README-example1-4.png)<!-- -->
