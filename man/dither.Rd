@@ -9,6 +9,7 @@ dither(
   res = 200,
   scale = NULL,
   target_palette = "extract",
+  tree_depth = 0,
   n = 16,
   bayer_size = 3,
   seed = NULL,
@@ -32,6 +33,10 @@ If scale is not NULL, it overides the value of res. Full size = 100, half size =
   \item 'greyscale' = A greyscale palette of length n is used
   \item A character vector of colours = The vector of colours is used as is
   }}
+
+\item{tree_depth}{depth of the quantization color classification tree when \code{target_palette = "extract"}
+Values of 0 or 1 allow selection of the optimal tree depth for the color reduction algorithm.
+Values between 2 and 8 may be used to manually adjust the tree depth.}
 
 \item{n}{Number of oclours to be used (default = 16) if target palette is set to 'extract' or 'greyscale'}
 
