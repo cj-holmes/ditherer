@@ -3,7 +3,7 @@
 
 # ditherer
 
-This is a very early work in progress. EXPERIMENTAL\!\!
+This is a very early work in progress. EXPERIMENTAL\!
 
 Now using `magick` as the main engine
 

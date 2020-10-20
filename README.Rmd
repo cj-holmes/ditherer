@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 
 # ditherer
 
-This is a very early work in progress. EXPERIMENTAL!!
+This is a very early work in progress. EXPERIMENTAL!
 
 Now using `magick` as the main engine
 
@@ -30,7 +30,7 @@ library(ditherer)
 ```
 
 Test image Lenna
-```{r example1, fig.width=10, fig.height=5}
+```{r example1}
 img <- 'data-raw/lenna.png'
 dither(img, dither = "ordered")
 dither(img, dither = "diffusion")
