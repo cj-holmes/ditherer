@@ -12,7 +12,6 @@ dither(
   tree_depth = 0,
   n = 16,
   bayer_size = 3,
-  seed = NULL,
   dither = "ordered",
   original = FALSE
 )
@@ -20,7 +19,7 @@ dither(
 \arguments{
 \item{img}{path or URL to image}
 
-\item{res}{Horixontal resolution of output image in pixels (default = 200)
+\item{res}{Horizontal resolution of output image in pixels (default = 200)
 This is only used if scale = NULL (which is the default behaviour). The reason for this is to try and
 prevent very large images being processed by accident (large images will be slow to dither)}
 
@@ -34,7 +33,7 @@ If scale is not NULL, it overides the value of res. Full size = 100, half size =
   \item A character vector of colours = The vector of colours is used as is
   }}
 
-\item{tree_depth}{depth of the quantization color classification tree when \code{target_palette = "extract"}
+\item{tree_depth}{depth of the quantization color classification tree when \code{target_palette = "extract"} (default = 0)
 Values of 0 or 1 allow selection of the optimal tree depth for the color reduction algorithm.
 Values between 2 and 8 may be used to manually adjust the tree depth.}
 
@@ -45,10 +44,10 @@ Values between 2 and 8 may be used to manually adjust the tree depth.}
 \item{dither}{One of
 \itemize{
   \item "ordered" - Ordered dithering using a bayer matrix (default)
-  \item "diffusion" - Floyd/Steinberg error diffusion dithering
+  \item "diffusion" - Floyd/Steinberg error diffusion dithering from \code{magick::image_map()}
   \item "none" - No dithering
   }}
 }
 \description{
-An implementation of ordered image dithering using the bayer matrix
+An implementation of ordered or error diffusion dithering
 }

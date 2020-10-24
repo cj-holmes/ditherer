@@ -23,21 +23,32 @@ Now using `magick` as the main engine
 remotes::install_github('cj-holmes/ditherer)
 ```
 
-## Example
-
 ```{r}
 library(ditherer)
 ```
 
-Test image Lenna
-```{r example1}
-img <- 'data-raw/lenna.png'
-dither(img, dither = "ordered")
-dither(img, dither = "diffusion")
-dither(img, dither = "none")
-dither(img, dither = "ordered", target_palette = "greyscale")
+Test image
+```{r}
+img <- magick::wizard
 ```
 
+Default settings are to extract a 16 colour palette from the original (resized image)
 
+## Ordered dithering (default)
+```{r out.width="50%", fig.show="hold", fig.height=8}
+dither(img, original = TRUE)
+dither(img, dither = "ordered")
+```
 
+## Error diffusion dithering
+```{r out.width="50%", fig.show="hold", fig.height=8}
+dither(img, original = TRUE)
+dither(img, dither = "diffusion")
+```
+
+## No dithering
+```{r out.width="50%", fig.show="hold", fig.height=8}
+dither(img, original = TRUE)
+dither(img, dither = "none")
+```
 

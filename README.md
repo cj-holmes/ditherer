@@ -13,35 +13,42 @@ Now using `magick` as the main engine
 remotes::install_github('cj-holmes/ditherer)
 ```
 
-## Example
-
 ``` r
 library(ditherer)
 ```
 
-Test image Lenna
+Test image
 
 ``` r
-img <- 'data-raw/lenna.png'
+img <- magick::wizard
+```
+
+Default settings are to extract a 16 colour palette from the original
+(resized image)
+
+## Ordered dithering (default)
+
+``` r
+dither(img, original = TRUE)
 dither(img, dither = "ordered")
 ```
 
-![](man/figures/README-example1-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-5-2.png" width="50%" />
+
+## Error diffusion dithering
 
 ``` r
+dither(img, original = TRUE)
 dither(img, dither = "diffusion")
 ```
 
-![](man/figures/README-example1-2.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-6-2.png" width="50%" />
+
+## No dithering
 
 ``` r
+dither(img, original = TRUE)
 dither(img, dither = "none")
 ```
 
-![](man/figures/README-example1-3.png)<!-- -->
-
-``` r
-dither(img, dither = "ordered", target_palette = "greyscale")
-```
-
-![](man/figures/README-example1-4.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-7-2.png" width="50%" />

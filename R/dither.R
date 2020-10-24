@@ -1,31 +1,31 @@
 #' Produce an image with ordered dithering
 #'
-#' An implementation of ordered image dithering using the bayer matrix
+#' An implementation of ordered or error diffusion dithering
 #'
 #' @param img path or URL to image
-#' @param res Horixontal resolution of output image in pixels (default = 200)
+#' @param res Horizontal resolution of output image in pixels (default = 200)
 #'   This is only used if scale = NULL (which is the default behaviour). The reason for this is to try and
 #'   prevent very large images being processed by accident (large images will be slow to dither)
+#' @param scale Scaling percentage (default = NULL).
+#'   If scale is not NULL, it overides the value of res. Full size = 100, half size = 50 etc.
+#' @param tree_depth depth of the quantization color classification tree when \code{target_palette = "extract"} (default = 0)
+#'   Values of 0 or 1 allow selection of the optimal tree depth for the color reduction algorithm.
+#'   Values between 2 and 8 may be used to manually adjust the tree depth.
 #' @param target_palette A target palette of colours for the output image. One of
 #' \itemize{
 #'   \item 'extract' (default) = A colour palette of length n is extracted from the image
 #'   \item 'greyscale' = A greyscale palette of length n is used
 #'   \item A character vector of colours = The vector of colours is used as is
 #'   }
-#' @param tree_depth depth of the quantization color classification tree when \code{target_palette = "extract"}
-#'   Values of 0 or 1 allow selection of the optimal tree depth for the color reduction algorithm.
-#'   Values between 2 and 8 may be used to manually adjust the tree depth.
-#' @param scale Scaling percentage (default = NULL).
-#'   If scale is not NULL, it overides the value of res. Full size = 100, half size = 50 etc.
-#' @param bayer_size bayer matrix size (square matrix of side length 2^bayer_size)
 #' @param n Number of oclours to be used (default = 16) if target palette is set to 'extract' or 'greyscale'
+#' @param bayer_size bayer matrix size (square matrix of side length 2^bayer_size)
 #' @param dither One of
 #' \itemize{
 #'   \item "ordered" - Ordered dithering using a bayer matrix (default)
-#'   \item "diffusion" - Floyd/Steinberg error diffusion dithering
+#'   \item "diffusion" - Floyd/Steinberg error diffusion dithering from \code{magick::image_map()}
 #'   \item "none" - No dithering
 #'   }
-#'
+#' @original Logical - return the original (resized to \code{res}) image
 #' @export
 dither <- function(img,
                    res = 200,
@@ -34,16 +34,22 @@ dither <- function(img,
                    tree_depth = 0,
                    n = 16,
                    bayer_size = 3,
-                   seed = NULL,
                    dither = "ordered",
                    original = FALSE){
 
   # Resize image and save info ----------------------------------------------
-  i <-
-    magick::image_read(img) %>%
-    magick::image_scale(geometry = ifelse(is.null(scale),
+  if(class(img) == "magick-image"){
+    i <-
+      img %>%
+      magick::image_scale(geometry = ifelse(is.null(scale),
+                                            magick::geometry_size_pixels(width=res),
+                                            magick::geometry_size_percent(width = scale)))}
+  else {
+    i <-
+      magick::image_read(img) %>%
+      magick::image_scale(geometry = ifelse(is.null(scale),
                                              magick::geometry_size_pixels(width=res),
-                                             magick::geometry_size_percent(width = scale)))
+                                             magick::geometry_size_percent(width = scale)))}
 
   # Compute information on resized image
   info_out <- magick::image_info(i)
@@ -62,7 +68,9 @@ dither <- function(img,
       }
 
   # Create dither matrix ----------------------------------------------------
-  if(dither == "ordered"){
+  if(original){
+    p <- i %>% magick::image_raster()
+  } else if(dither == "ordered"){
     dm <-
       bayer(bayer_size) %>%
       norm_bayer() %>%
