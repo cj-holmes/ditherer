@@ -20,7 +20,7 @@ library(ditherer)
 Test image
 
 ``` r
-img <- magick::wizard
+img <- 'data-raw/lenna.png'
 ```
 
 Default settings are to extract a 16 colour palette from the original
