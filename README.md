@@ -17,38 +17,60 @@ remotes::install_github('cj-holmes/ditherer)
 library(ditherer)
 ```
 
-Test image
+## Test image
+
+View the (resized) original image by setting `original = TRUE`
 
 ``` r
-img <- 'data-raw/lenna.png'
+img <- 'data-raw/arnie.jpg'
+dither(img, original = TRUE)
 ```
 
-Default settings are to extract a 16 colour palette from the original
-(resized image)
+![](man/figures/README-unnamed-chunk-4-1.png)<!-- -->
 
 ## Ordered dithering (default)
 
+Default settings are to extract a 16 colour target-palette from the
+original (resized image).
+
 ``` r
-dither(img, original = TRUE)
 dither(img, dither = "ordered")
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-5-2.png" width="50%" />
+![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
+
+The number of colours in the extracted target palette can be set with
+`n`.
+
+``` r
+dither(img, dither = "ordered", n=4)
+```
+
+![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
+
+A greyscale target-palette of length `n` can be generated
+
+``` r
+dither(img, dither = "ordered", target_palette = "greyscale", n=10)
+```
+
+![](man/figures/README-unnamed-chunk-7-1.png)<!-- -->
+
+A custom palette can be specified and will be used as is
+
+``` r
+dither(img, dither = "ordered", target_palette = c("black", "red3", "grey50", "tan2"))
+```
+
+![](man/figures/README-unnamed-chunk-8-1.png)<!-- -->
 
 ## Error diffusion dithering
 
+Floyd/Steinberg error diffusion dithering (from the `magick` package)
+can be specified
+
 ``` r
-dither(img, original = TRUE)
 dither(img, dither = "diffusion")
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-6-2.png" width="50%" />
-
-## No dithering
-
-``` r
-dither(img, original = TRUE)
-dither(img, dither = "none")
-```
-
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-7-2.png" width="50%" />
+![](man/figures/README-unnamed-chunk-9-1.png)<!-- -->
