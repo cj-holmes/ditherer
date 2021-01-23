@@ -3,9 +3,9 @@
 
 # ditherer
 
-This is a very early work in progress. EXPERIMENTAL\!
-
-Now using `magick` as the main engine
+This package makes an attempt at implementing full colour ordered (Bayer
+matrix) dithering in R. The engine behind the image handling is the
+`magick` package.
 
 ## Installation
 
@@ -13,64 +13,115 @@ Now using `magick` as the main engine
 remotes::install_github('cj-holmes/ditherer)
 ```
 
+Add package to search path
+
 ``` r
 library(ditherer)
+
+# ggplot2 for convenience in readme
+library(ggplot2)
 ```
 
-## Test image
+## Typical workflow
 
-View the (resized) original image by setting `original = TRUE`
+Path to original image
 
 ``` r
-img <- 'data-raw/arnie.jpg'
-dither(img, original = TRUE)
+img <- 'data-raw/lenna.png'
 ```
 
-![](man/figures/README-unnamed-chunk-4-1.png)<!-- -->
-
-## Ordered dithering (default)
-
-Default settings are to extract a 16 colour target-palette from the
-original (resized image).
+Create a target palette for the original image. Here I do that using the
+`colorfindr` package.
 
 ``` r
-dither(img, dither = "ordered")
+# Create a 16 colour target palette from the image
+set.seed(1)
+tp <-
+  colorfindr::get_colors(img) %>% 
+  colorfindr::make_palette(n = 16, show = FALSE)
+
+# View the target palette
+data.frame(x = tp) %>%
+  ggplot(aes(x="", fill = x))+
+  geom_bar()+
+  coord_flip()+
+  scale_fill_identity()+
+  theme_void()
 ```
 
-![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
-The number of colours in the extracted target palette can be set with
-`n`.
+Recreate the original image using only the target palette
 
 ``` r
-dither(img, dither = "ordered", n=4)
+# Original
+dither(img, original = TRUE) + labs(caption="Original")
+
+# Dithered (target palette)
+dither(img, target_palette = tp) + labs(caption = "16 colour target palette")
 ```
 
-![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="45%" /><img src="man/figures/README-unnamed-chunk-6-2.png" width="45%" />
 
-A greyscale target-palette of length `n` can be generated
+## Default target palette
+
+By default, if a target palette is not supplied, `ditherer` uses a
+uniform palette made of 64 colours (in RGB steps of 85). This palette
+does not perform well, but it does give a certain retro-gaming charm.
+
+View the default palette
 
 ``` r
-dither(img, dither = "ordered", target_palette = "greyscale", n=10)
+data.frame(x = ditherer::uniform_cols) %>% 
+  ggplot(aes(x="", fill = x))+
+  geom_bar()+
+  coord_flip()+
+  scale_fill_identity()+
+  theme_void()
 ```
 
-![](man/figures/README-unnamed-chunk-7-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
-A custom palette can be specified and will be used as is
+Varying the target palette colour spread `r` factor
 
 ``` r
-dither(img, dither = "ordered", target_palette = c("black", "red3", "grey50", "tan2"))
+dither(img, r=1/8) + labs(caption = "r = 1/8 (default)")
+dither(img, r=1/6) + labs(caption = "r = 1/6")
+dither(img, r=1/4) + labs(caption = "r = 1/4")
 ```
 
-![](man/figures/README-unnamed-chunk-8-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="33%" /><img src="man/figures/README-unnamed-chunk-8-2.png" width="33%" /><img src="man/figures/README-unnamed-chunk-8-3.png" width="33%" />
 
-## Error diffusion dithering
-
-Floyd/Steinberg error diffusion dithering (from the `magick` package)
-can be specified
+## Greyscale target palette
 
 ``` r
-dither(img, dither = "diffusion")
+dither(img, target_palette = grey.colors(8))
 ```
 
-![](man/figures/README-unnamed-chunk-9-1.png)<!-- -->
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="45%" />
+
+## Other examples
+
+### Splash
+
+``` r
+dither('http://sipi.usc.edu/database/preview/misc/4.2.01.png', original = TRUE) +
+  labs(caption = "Original")
+  
+dither('http://sipi.usc.edu/database/preview/misc/4.2.01.png') +
+  labs(caption = "Dithering - default parameters and target palette")
+```
+
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="45%" /><img src="man/figures/README-unnamed-chunk-10-2.png" width="45%" />
+
+### Mandrill (a.k.a. Baboon)
+
+``` r
+dither('http://sipi.usc.edu/database/preview/misc/4.2.03.png', original = TRUE) +
+  labs(caption = "Original")
+  
+dither('http://sipi.usc.edu/database/preview/misc/4.2.03.png', r=1/4) +
+  labs(caption = "Dithering - default target palette")
+```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="45%" /><img src="man/figures/README-unnamed-chunk-11-2.png" width="45%" />
