@@ -16,9 +16,8 @@ bayer <- function(n){
 
   m <- bayer(n-1)
 
-  rbind(
-    cbind(4 * m + 0, 4 * m + 2),
-    cbind(4 * m + 3, 4 * m + 1))
+  rbind(cbind(4 * m + 0, 4 * m + 2), cbind(4 * m + 3, 4 * m + 1))
+
 }
 
 
@@ -36,7 +35,7 @@ bayer <- function(n){
 #'   for in this application - based purely on visual aesthetics
 #'
 #' @return A normalised Bayer matrix
-norm_bayer <- function(m) m/length(m)
+norm_bayer <- function(m) ((m+1) / length(m)) - 0.5
 
 
 #' Repeat a Bayer matrix to fill rows and columns

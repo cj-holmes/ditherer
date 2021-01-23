@@ -8,9 +8,8 @@ dither(
   img,
   res = 200,
   scale = NULL,
-  target_palette = "extract",
-  tree_depth = 0,
-  n = 16,
+  target_palette = NULL,
+  r = 1/8,
   bayer_size = 3,
   dither = "ordered",
   original = FALSE
@@ -19,34 +18,27 @@ dither(
 \arguments{
 \item{img}{path or URL to image}
 
-\item{res}{Horizontal resolution of output image in pixels (default = 200)
+\item{res}{horizontal resolution of output image in pixels (default = 200)
 This is only used if scale = NULL (which is the default behaviour). The reason for this is to try and
 prevent very large images being processed by accident (large images will be slow to dither)}
 
-\item{scale}{Scaling percentage (default = NULL).
+\item{scale}{scaling percentage (default = NULL).
 If scale is not NULL, it overides the value of res. Full size = 100, half size = 50 etc.}
 
-\item{target_palette}{A target palette of colours for the output image. One of
-\itemize{
-  \item 'extract' (default) = A colour palette of length n is extracted from the image
-  \item 'greyscale' = A greyscale palette of length n is used
-  \item A character vector of colours = The vector of colours is used as is
-  }}
+\item{target_palette}{A target palette of colours for the output image. Defaults to a uniformly spaced 64 colour palette.}
 
-\item{tree_depth}{depth of the quantization color classification tree when \code{target_palette = "extract"} (default = 0)
-Values of 0 or 1 allow selection of the optimal tree depth for the color reduction algorithm.
-Values between 2 and 8 may be used to manually adjust the tree depth.}
+\item{r}{spread in color space for target palette (default = 1/8). This default is set to look 'OK' by eye. It is probably the factor that will
+most significantly change the appearance of the dithering. Smaller numbers will give 'broader' more dihtering and higher numbers will give 'tighter' less dithering}
 
-\item{n}{Number of oclours to be used (default = 16) if target palette is set to 'extract' or 'greyscale'}
+\item{bayer_size}{bayer matrix size (square matrix of side length 2^bayer_size) (default = 3)}
 
-\item{bayer_size}{bayer matrix size (square matrix of side length 2^bayer_size)}
-
-\item{dither}{One of
+\item{dither}{dither type, one of
 \itemize{
   \item "ordered" - Ordered dithering using a bayer matrix (default)
   \item "diffusion" - Floyd/Steinberg error diffusion dithering from \code{magick::image_map()}
-  \item "none" - No dithering
-  }}
+  \item "none" - No dithering}}
+
+\item{original}{return the original image (resized to \code{res})}
 }
 \description{
 An implementation of ordered or error diffusion dithering
