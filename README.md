@@ -59,6 +59,10 @@ dither(img, original = TRUE) + labs(caption="Original")
 
 # Dithered (target palette)
 dither(img, target_palette = tp) + labs(caption = "16 colour target palette")
+#> Warning in if (target_palette == "c216") {: the condition has length > 1 and
+#> only the first element will be used
+#> Warning in if (target_palette == "c64") {: the condition has length > 1 and only
+#> the first element will be used
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="45%" /><img src="man/figures/README-unnamed-chunk-6-2.png" width="45%" />
@@ -66,13 +70,12 @@ dither(img, target_palette = tp) + labs(caption = "16 colour target palette")
 ## Default target palette
 
 By default, if a target palette is not supplied, `ditherer` uses a
-uniform palette made of 64 colours (in RGB steps of 85). This palette
-does not perform well, but it does give a certain retro-gaming charm.
+uniform palette made of 216 colours.
 
 View the default palette
 
 ``` r
-data.frame(x = ditherer::uniform_cols) %>% 
+data.frame(x = ditherer::c216) %>% 
   ggplot(aes(x="", fill = x))+
   geom_bar()+
   coord_flip()+
@@ -96,6 +99,10 @@ dither(img, r=1/4) + labs(caption = "r = 1/4")
 
 ``` r
 dither(img, target_palette = grey.colors(8))
+#> Warning in if (target_palette == "c216") {: the condition has length > 1 and
+#> only the first element will be used
+#> Warning in if (target_palette == "c64") {: the condition has length > 1 and only
+#> the first element will be used
 ```
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="45%" />
@@ -120,7 +127,7 @@ dither('http://sipi.usc.edu/database/preview/misc/4.2.01.png') +
 dither('http://sipi.usc.edu/database/preview/misc/4.2.03.png', original = TRUE) +
   labs(caption = "Original")
   
-dither('http://sipi.usc.edu/database/preview/misc/4.2.03.png', r=1/4) +
+dither('http://sipi.usc.edu/database/preview/misc/4.2.03.png') +
   labs(caption = "Dithering - default target palette")
 ```
 
